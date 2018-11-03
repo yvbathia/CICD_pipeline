@@ -76,26 +76,26 @@ c. Add pipeline code into “pipeline” section
 
 
 For Daily Build:
-	node {  
-		git 'https://github.com/yvbathia/Hello-world.git'
-        		stage('Preparation') { 
-             		git branch: 'master'  // For daily builds it will be always master
-              		git 'https://github.com/yvbathia/Hello-world.git'  // this is my sample hello world maven project
-         		 }
-          		stage('Build') {
-              		// for  Running the maven build              
-              		// Checking that is it Unix based or not
-              		// If it is Unix based then we will go ahead
-              		if (isUnix()) {
-                  			sh "'mvn' package"
-              		} 
-         		 }
+		node {  
+			git 'https://github.com/yvbathia/Hello-world.git'
+				stage('Preparation') { 
+				git branch: 'master'  // For daily builds it will be always master
+				git 'https://github.com/yvbathia/Hello-world.git'  // this is my sample hello world maven project
+				 }
+				stage('Build') {
+				// for  Running the maven build              
+				// Checking that is it Unix based or not
+				// If it is Unix based then we will go ahead
+				if (isUnix()) {
+						sh "'mvn' package"
+				} 
+				 }
 
-		// Following will be code for uploading the build to Nexus repository
-		// it will upload to maven-releases repo and name as master
-        		nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: ''master''
-         
-   	}
+			// Following will be code for uploading the build to Nexus repository
+			// it will upload to maven-releases repo and name as master
+				nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: ''master''
+
+		}
 
 
 
@@ -121,56 +121,56 @@ For Release Build:
 (Note: It will check for parameters  if given then it will run for that branch otherwise it will build for 1.0 then 2.0 )
 (If you want to enable parameters then follow steps after pipeline code)
 
-node {
-	 git 'https://github.com/yvbathia/Hello-world.git'
-   if(params){
-        		print(params.version)
-         		stage(params.version) {
-            		git branch: params.version
-            		git 'https://github.com/yvbathia/Hello-world.git'
-        		}
-        	    stage('Build') {
-          		// Checking that is it Unix based or not
-          		// If it is Unix based then we will go ahead
-          		if (isUnix()) {
-              		sh "'mvn' package"
-          		} 
-       	    }
-       		// Upload to nexus repository
-        		nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: params.version
+	node {
+		 git 'https://github.com/yvbathia/Hello-world.git'
+	   if(params){
+				print(params.version)
+				stage(params.version) {
+				git branch: params.version
+				git 'https://github.com/yvbathia/Hello-world.git'
+				}
+			    stage('Build') {
+				// Checking that is it Unix based or not
+				// If it is Unix based then we will go ahead
+				if (isUnix()) {
+				sh "'mvn' package"
+				} 
+		    }
+			// Upload to nexus repository
+				nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: params.version
 
-   	}else{
-       		stage('1.0') {
-            		git branch: '1.0'
-            		git 'https://github.com/yvbathia/Hello-world.git'
-        		}
-        		stage('Build') {
-          		// Checking that is it Unix based or not
-          		// If it is Unix based then we will go ahead
-          if (isUnix()) {
-              sh "'mvn' package"
-          } 
-       		}
-       		// Upload to nexus repository
-        nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: 'master'
-        		stage('2.0') { 
-              git branch: '2.0'
-              git 'https://github.com/yvbathia/Hello-world.git'
-          }
-          		stage('Build') {
-              		// Run the maven build
-              
-              // Checking that is it Unix based or not
-              // If it is Unix based then we will go ahead
-              if (isUnix()) {
-                  sh "'mvn' package"
-              	} 
-          		}
-        nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: '1.0'
-       
-   	}
-   
-}
+		}else{
+			stage('1.0') {
+				git branch: '1.0'
+				git 'https://github.com/yvbathia/Hello-world.git'
+				}
+				stage('Build') {
+				// Checking that is it Unix based or not
+				// If it is Unix based then we will go ahead
+		  if (isUnix()) {
+		      sh "'mvn' package"
+		  } 
+			}
+			// Upload to nexus repository
+		nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: 'master'
+				stage('2.0') { 
+		      git branch: '2.0'
+		      git 'https://github.com/yvbathia/Hello-world.git'
+		  }
+				stage('Build') {
+				// Run the maven build
+
+		      // Checking that is it Unix based or not
+		      // If it is Unix based then we will go ahead
+		      if (isUnix()) {
+			  sh "'mvn' package"
+			} 
+				}
+		nexusArtifactUploader artifacts: [[artifactId: '1', classifier: '', file: 'target/my-app-1.0-SNAPSHOT.jar', type: 'jar']], credentialsId: '40364ae5-0277-48e5-856f-d8f4b01867aa', groupId: 'my-app', nexusUrl: 'localhost:8081', nexusVersion: 'nexus3', protocol: 'http', repository: 'maven-releases', version: '1.0'
+
+		}
+
+	}
 
 
 
